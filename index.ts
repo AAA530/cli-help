@@ -10,17 +10,56 @@ import OpenAI from "openai";
 const openai = new OpenAI({apiKey:process.env.OPENAI_API_KEY});
 config();
 
-async function main() {
-  const completion = await openai.chat.completions.create({
-    messages: [{ role: "system", content: "tell me the ." }],
-    model: "gpt-3.5-turbo",
-  });
+const program = new Command();
 
-  console.log(completion.choices[0]);
+program
+  .name('cli-help')
+  .description('A command line tool for helping developers')
+  .version('0.0.1');
+
+
+const first = (str, options) => {
+  const limit = options.first ? 1 : undefined;
+  console.log(str);
 }
 
-console.log(
-  main().then((res) => {
-    console.log(res);
-  })
-);
+const second = (str, options) => {
+  const limit = options.first ? 1 : undefined;
+  console.log(str);
+}
+
+program
+  .option('-f, --first <string>', 'display just the first substring')
+  .action(first);
+
+program
+  .option('-s, --second <string>', 'display just the first substring')
+  .action(second);
+
+
+
+async function main() {
+  // program
+  //   .command('run')
+  //   .action(run);
+  await program.parseAsync(process.argv);
+}
+
+main()
+  
+// program.parse();
+
+// async function main() {
+//   const completion = await openai.chat.completions.create({
+//     messages: [{ role: "system", content: "give mw command to delete a file" }],
+//     model: "gpt-3.5-turbo",
+//   });
+
+//   console.log(completion.choices[0]);
+// }
+
+// console.log(
+//   main().then((res) => {
+//     console.log(res);
+//   })
+// );
