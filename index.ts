@@ -10,17 +10,35 @@ import OpenAI from "openai";
 const openai = new OpenAI({apiKey:process.env.OPENAI_API_KEY});
 config();
 
-async function main() {
+const program = new Command();
+
+const configuration ={}
+
+program
+  .name('cli-help')
+  .description('A command line tool for helping developers')
+  .version('0.0.1');
+
+
+const first = async (str, options) => {
+  // const limit = options.first ? 1 : undefined;
+  console.log(str)
   const completion = await openai.chat.completions.create({
-    messages: [{ role: "system", content: "tell me the ." }],
+    messages: [{ role: "system", content: str.text }],
     model: "gpt-3.5-turbo",
   });
 
-  console.log(completion.choices[0]);
+  console.log(completion.choices[0].message.content);
 }
 
-console.log(
-  main().then((res) => {
-    console.log(res);
-  })
-);
+program
+  .option('-q, --question <string>', 'give a prompt to get the answer')
+  .action(first);
+
+
+
+async function main() {
+  await program.parseAsync(process.argv);
+}
+
+main()
